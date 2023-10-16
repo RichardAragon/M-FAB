@@ -1,0 +1,32 @@
+class AlphaBetaClassification:
+    def __init__(self, alpha, beta):
+        self.alpha = alpha
+        self.beta = beta
+
+    def fuse(self, prompt, image):
+        """Fuses the prompt and image data according to the alpha and beta parameters.
+
+        Args:
+            prompt: The prompt data.
+            image: The image data.
+
+        Returns:
+            The fused input.
+        """
+
+        fused_input = self.alpha * prompt + self.beta * image
+        return fused_input
+
+    def classify(self, fused_input):
+        """Classifies the fused input.
+
+        Args:
+            fused_input: The fused input.
+
+        Returns:
+            The output of the classification model.
+        """
+
+        output = model(fused_input)
+        return output
+
