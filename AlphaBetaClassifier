@@ -1,7 +1,10 @@
+import numpy as np
+
 class AlphaBetaClassification:
-    def __init__(self, alpha, beta):
+    def __init__(self, alpha, beta, model):
         self.alpha = alpha
         self.beta = beta
+        self.model = model
 
     def fuse(self, prompt, image):
         """Fuses the prompt and image data according to the alpha and beta parameters.
@@ -13,7 +16,11 @@ class AlphaBetaClassification:
         Returns:
             The fused input.
         """
+        # Ensure prompt and image are numpy arrays for element-wise operations
+        prompt = np.array(prompt)
+        image = np.array(image)
 
+        # Simple element-wise fusion, assuming prompt and image have the same shape
         fused_input = self.alpha * prompt + self.beta * image
         return fused_input
 
@@ -26,7 +33,37 @@ class AlphaBetaClassification:
         Returns:
             The output of the classification model.
         """
-
-        output = model(fused_input)
+        # Ensure fused_input is in the correct shape for the model
+        fused_input = fused_input.reshape(1, -1)
+        
+        output = self.model.predict(fused_input)
         return output
+
+# Example usage:
+from sklearn.linear_model import LogisticRegression
+
+# Create a simple logistic regression model for demonstration
+model = LogisticRegression()
+
+# Dummy data for demonstration (you would use real data here)
+prompt_data = [1, 2, 3, 4, 5]
+image_data = [5, 4, 3, 2, 1]
+
+# Instantiate the class
+classifier = AlphaBetaClassification(alpha=0.6, beta=0.4, model=model)
+
+# Fuse the prompt and image data
+fused_input = classifier.fuse(prompt_data, image_data)
+
+# Train the model (using dummy training data here)
+# Normally, you would have a proper training dataset
+X_train = np.array([fused_input])
+y_train = np.array([1])  # Dummy label
+
+model.fit(X_train, y_train)
+
+# Classify the fused input
+output = classifier.classify(fused_input)
+print(output)
+
 
